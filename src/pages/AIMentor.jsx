@@ -39,7 +39,7 @@ const AIMentor = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen pt-20 bg-black text-white">
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-b from-blue-900 to-black py-12">
         <div className="absolute inset-0">
