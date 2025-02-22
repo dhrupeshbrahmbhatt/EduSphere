@@ -5,8 +5,7 @@ import AIMentor from './pages/AIMentor'
 import TeacherDashboard from './pages/TeacherDashboard'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
-// import Resources from './pages/Resources'
-// import Attendance from './pages/Attendance'
+import StudentDashboard from './pages/StudentDashboard'
 
 function App() {
   return (
@@ -19,6 +18,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/dashboard" element={<TeacherDashboard />} />
+          <Route path="/student-dashboard" element={<StudentDashboard />} />
         </Routes>
       </div>
     </Router>
