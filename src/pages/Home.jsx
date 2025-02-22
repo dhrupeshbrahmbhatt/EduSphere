@@ -3,8 +3,11 @@ import { useEffect } from 'react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import { FaRobot, FaChalkboardTeacher, FaAward, FaUsers, FaLaptopCode, FaBrain, FaGraduationCap, FaChartLine, FaGlobe, FaRocket, FaMedal, FaCertificate } from 'react-icons/fa'
+import { useNavigate } from 'react-router-dom'
 
 function Home() {
+  const navigate = useNavigate()
+
   useEffect(() => {
     AOS.init({
       duration: 1000,
@@ -39,6 +42,10 @@ function Home() {
     }
   }
 
+  const handleGetStartedClick = () => {
+    navigate('/login')
+  }
+
   return (
     <motion.div 
       initial="hidden"
@@ -63,6 +70,7 @@ function Home() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full text-lg font-semibold transition-all"
+            onClick={handleGetStartedClick}
           >
             Get Started
           </motion.button>
