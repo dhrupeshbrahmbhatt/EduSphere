@@ -33,6 +33,7 @@ function Navbar() {
   const navItems = [
     { title: 'Home', path: '/' },
     { title: 'AI Mentor', path: '/ai-mentor' },
+    { title: 'About Us', path: '/about' },
     { title: 'Courses', path: '/courses' },
     { title: 'Analytics', path: '/analytics' },
     { title: 'Resources', path: '/resources' }
