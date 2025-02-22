@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import AIMentor from './pages/AIMentor'
+import TeacherDashboard from './pages/TeacherDashboard'
 // import Attendance from './pages/Attendance'
 // import Resources from './pages/Resources'
 // import Analytics from './pages/Analytics'
@@ -17,6 +18,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/ai-mentor" element={<AIMentor />} />
+            <Route path="/TeacherDashboard" element={<TeacherDashboard />} />
             {/* <Route path="/attendance" element={<Attendance />} /> */}
             {/* <Route path="/resources" element={<Resources />} />
             <Route path="/analytics" element={<Analytics />} />
