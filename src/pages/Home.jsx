@@ -1,7 +1,19 @@
 import { motion } from 'framer-motion'
+import { useEffect } from 'react'
+import AOS from 'aos'
+import 'aos/dist/aos.css'
 import { FaRobot, FaChalkboardTeacher, FaAward, FaUsers, FaLaptopCode, FaBrain, FaGraduationCap, FaChartLine, FaGlobe, FaRocket, FaMedal, FaCertificate } from 'react-icons/fa'
 
 function Home() {
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: true,
+      mirror: false,
+      offset: 100
+    })
+  }, [])
+
   // Add container animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -37,70 +49,64 @@ function Home() {
       {/* Hero Section */}
       <motion.section 
         variants={itemVariants}
-        className="h-screen flex flex-col items-center justify-center text-center px-4 relative"
+        className="h-screen flex flex-col items-center justify-center text-center px-4 relative overflow-hidden"
       >
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10"></div>
-        <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
-          EduTech AI
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mb-8">
-          Revolutionizing Education Through Artificial Intelligence and Immersive Learning
-        </p>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full text-lg font-semibold transition-all"
-        >
-          Get Started
-        </motion.button>
+        <div data-aos="fade-up" data-aos-delay="200">
+          <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+            EduTech AI
+          </h1>
+          <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mb-8">
+            Revolutionizing Education Through Artificial Intelligence and Immersive Learning
+          </p>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full text-lg font-semibold transition-all"
+          >
+            Get Started
+          </motion.button>
+        </div>
       </motion.section>
 
       {/* Features Section */}
-      <motion.section 
-        variants={itemVariants}
-        className="py-20 px-4"
-      >
+      <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-16">Revolutionary Features</h2>
+          <div data-aos="fade-up">
+            <h2 className="text-4xl font-bold text-center mb-16">Revolutionary Features</h2>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {/* AI Mentor Card */}
-            <motion.div
-              whileHover={{ y: -10 }}
-              className="bg-gray-800 p-8 rounded-2xl hover:bg-gray-700 transition-all"
-            >
-              <FaRobot className="text-5xl text-blue-500 mb-4" />
-              <h3 className="text-2xl font-bold mb-4">AI Mentor</h3>
-              <p className="text-gray-400">
-                Personalized learning experience with our advanced AI mentor that adapts to your unique learning style.
-              </p>
-            </motion.div>
-
-            {/* Smart Analytics Card */}
-            <motion.div
-              whileHover={{ y: -10 }}
-              className="bg-gray-800 p-8 rounded-2xl hover:bg-gray-700 transition-all"
-            >
-              <FaChalkboardTeacher className="text-5xl text-purple-500 mb-4" />
-              <h3 className="text-2xl font-bold mb-4">Smart Analytics</h3>
-              <p className="text-gray-400">
-                Track progress and gain insights with our comprehensive analytics dashboard.
-              </p>
-            </motion.div>
-
-            {/* Adaptive Learning Card */}
-            <motion.div
-              whileHover={{ y: -10 }}
-              className="bg-gray-800 p-8 rounded-2xl hover:bg-gray-700 transition-all"
-            >
-              <FaBrain className="text-5xl text-green-500 mb-4" />
-              <h3 className="text-2xl font-bold mb-4">Adaptive Learning</h3>
-              <p className="text-gray-400">
-                AI-powered system that adjusts difficulty and content based on your performance and learning pace.
-              </p>
-            </motion.div>
+            {[
+              {
+                icon: <FaRobot className="text-5xl text-blue-500 mb-4" />,
+                title: "AI Mentor",
+                description: "Personalized learning experience with our advanced AI mentor that adapts to your unique learning style."
+              },
+              {
+                icon: <FaChalkboardTeacher className="text-5xl text-purple-500 mb-4" />,
+                title: "Smart Analytics",
+                description: "Track progress and gain insights with our comprehensive analytics dashboard."
+              },
+              {
+                icon: <FaBrain className="text-5xl text-green-500 mb-4" />,
+                title: "Adaptive Learning",
+                description: "AI-powered system that adjusts difficulty and content based on your performance and learning pace."
+              }
+            ].map((feature, index) => (
+              <div 
+                key={index}
+                data-aos="fade-up"
+                data-aos-delay={index * 100}
+                className="bg-gray-800 p-8 rounded-2xl hover:bg-gray-700 transition-all transform hover:-translate-y-2"
+              >
+                {feature.icon}
+                <h3 className="text-2xl font-bold mb-4">{feature.title}</h3>
+                <p className="text-gray-400">{feature.description}</p>
+              </div>
+            ))}
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* How It Works Section */}
       <motion.section 
@@ -215,12 +221,12 @@ function Home() {
       </motion.section>
 
       {/* Technology Stack Section */}
-      <motion.section 
-        variants={itemVariants}
-        className="py-20 px-4 bg-black"
-      >
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-16">Cutting-Edge Technology Stack</h2>
+      <section className="py-20 px-4 bg-black relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/circuit.svg')] bg-center opacity-5"></div>
+        <div className="max-w-7xl mx-auto relative">
+          <div data-aos="fade-up">
+            <h2 className="text-4xl font-bold text-center mb-16">Cutting-Edge Technology Stack</h2>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {[
               {
@@ -244,27 +250,27 @@ function Home() {
                 icon: <FaRocket className="text-4xl text-red-500" />
               }
             ].map((item, index) => (
-              <motion.div
+              <div
                 key={index}
-                whileHover={{ scale: 1.05 }}
-                className="bg-gray-800/50 p-8 rounded-xl text-center"
+                data-aos="zoom-in"
+                data-aos-delay={index * 100}
+                className="bg-gray-800/50 p-8 rounded-xl text-center backdrop-blur-sm hover:bg-gray-700/50 transition-all"
               >
                 <div className="flex justify-center mb-4">{item.icon}</div>
                 <h3 className="text-xl font-bold mb-2">{item.title}</h3>
                 <p className="text-gray-400">{item.description}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* Achievement Showcase */}
-      <motion.section 
-        variants={itemVariants}
-        className="py-20 px-4 bg-gradient-to-r from-blue-900/20 to-purple-900/20"
-      >
+      <section className="py-20 px-4 bg-gradient-to-r from-blue-900/20 to-purple-900/20">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-16">Student Success Stories</h2>
+          <div data-aos="fade-up">
+            <h2 className="text-4xl font-bold text-center mb-16">Student Success Stories</h2>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {[
               {
@@ -283,29 +289,30 @@ function Home() {
                 description: "Leading companies hiring our graduates"
               }
             ].map((item, index) => (
-              <motion.div
+              <div
                 key={index}
-                whileHover={{ y: -10 }}
-                className="text-center"
+                data-aos="fade-up"
+                data-aos-delay={index * 200}
+                className="text-center transform hover:-translate-y-2 transition-transform"
               >
                 <h3 className="text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600 mb-4">
                   {item.metric}
                 </h3>
                 <h4 className="text-2xl font-bold mb-2">{item.title}</h4>
                 <p className="text-gray-400">{item.description}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
-      </motion.section>
+      </section>
 
-      {/* Certification Paths */}
-      <motion.section 
-        variants={itemVariants}
-        className="py-20 px-4"
-      >
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-16">Professional Certification Paths</h2>
+      {/* Certification Paths with Parallax */}
+      <section className="py-20 px-4 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/particles.svg')] bg-fixed opacity-5"></div>
+        <div className="max-w-7xl mx-auto relative">
+          <div data-aos="fade-up">
+            <h2 className="text-4xl font-bold text-center mb-16">Professional Certification Paths</h2>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
@@ -328,14 +335,15 @@ function Home() {
                 price: "$799"
               }
             ].map((path, index) => (
-              <motion.div
+              <div
                 key={index}
-                whileHover={{ y: -10 }}
+                data-aos="flip-left"
+                data-aos-delay={index * 100}
                 className={`${
                   path.featured 
                     ? 'bg-gradient-to-b from-blue-600 to-purple-600' 
                     : 'bg-gray-800'
-                } p-8 rounded-2xl relative`}
+                } p-8 rounded-2xl relative transform hover:-translate-y-2 transition-transform`}
               >
                 <div className="flex justify-center mb-6">{path.icon}</div>
                 <h3 className="text-2xl font-bold mb-4">{path.title}</h3>
@@ -348,30 +356,25 @@ function Home() {
                   ))}
                 </ul>
                 <p className="text-3xl font-bold mb-6">{path.price}</p>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`w-full py-3 rounded-full font-semibold ${
-                    path.featured 
-                      ? 'bg-white text-blue-600' 
-                      : 'bg-blue-600 text-white'
-                  }`}
-                >
+                <button className={`w-full py-3 rounded-full font-semibold ${
+                  path.featured 
+                    ? 'bg-white text-blue-600' 
+                    : 'bg-blue-600 text-white'
+                } hover:opacity-90 transition-opacity`}>
                   Enroll Now
-                </motion.button>
-              </motion.div>
+                </button>
+              </div>
             ))}
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* Global Impact */}
-      <motion.section 
-        variants={itemVariants}
-        className="py-20 px-4 bg-gray-900/50"
-      >
+      <section className="py-20 px-4 bg-gray-900/50">
         <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-16">Global Impact</h2>
+          <div data-aos="fade-up">
+            <h2 className="text-4xl font-bold mb-16">Global Impact</h2>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
             {[
               { number: "120+", label: "Countries" },
@@ -379,7 +382,12 @@ function Home() {
               { number: "500+", label: "Courses" },
               { number: "98%", label: "Success Rate" }
             ].map((stat, index) => (
-              <div key={index} className="p-6">
+              <div 
+                key={index}
+                data-aos="zoom-in"
+                data-aos-delay={index * 100}
+                className="p-6 transform hover:scale-105 transition-transform"
+              >
                 <h3 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
                   {stat.number}
                 </h3>
@@ -388,29 +396,25 @@ function Home() {
             ))}
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* Final CTA Section */}
-      <motion.section 
-        variants={itemVariants}
-        className="py-32 px-4 bg-gradient-to-r from-blue-600/20 to-purple-600/20"
-      >
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-5xl md:text-6xl font-bold mb-8">
-            The Future of Education is Here
-          </h2>
-          <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto">
-            Join thousands of students worldwide who are already transforming their careers with EduTech AI
-          </p>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-12 py-4 rounded-full text-xl font-semibold hover:opacity-90 transition-all"
-          >
-            Begin Your Journey
-          </motion.button>
+      <section className="py-32 px-4 bg-gradient-to-r from-blue-600/20 to-purple-600/20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-fixed opacity-5"></div>
+        <div className="max-w-4xl mx-auto text-center relative">
+          <div data-aos="fade-up">
+            <h2 className="text-5xl md:text-6xl font-bold mb-8">
+              The Future of Education is Here
+            </h2>
+            <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto">
+              Join thousands of students worldwide who are already transforming their careers with EduTech AI
+            </p>
+            <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-12 py-4 rounded-full text-xl font-semibold hover:opacity-90 transition-all transform hover:scale-105">
+              Begin Your Journey
+            </button>
+          </div>
         </div>
-      </motion.section>
+      </section>
     </motion.div>
   )
 }
