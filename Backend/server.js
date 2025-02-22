@@ -8,38 +8,24 @@ process.on('warning', (warning) => {
 
 require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose'); 
 const cors = require('cors');
-const User = require('./Model/User');
+const connectDB = require('../backend/config/db');
+const authRoutes = require('./routes/authRoutes');
+const mongoose = require('mongoose');
+const User = require('./models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const aleph = require('aleph-js');
 const CryptoJS = require('crypto-js');
-const NodeRSA = require('node-rsa');
-const app = express();
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
 
-// const corsOptions = {
-//     origin: 'https://hello-haven.onrender.com',
-//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-//     allowedHeaders: ['Content-Type', 'Authorization'], // Include any required headers
-// };
-app.use(cors({
-  origin: 'http://localhost:5173', // or whatever your frontend URL is
-  credentials: true
-}));
+const app = express();
 
 // Connect to MongoDB
-mongoose.connect("mongodb+srv://dhrupesh:DK_dk@lab.pk1pccj.mongodb.net/labData")
-  .then(() => console.log("Server connected to DB..."))
-  .catch(err => console.log("Error in MongoDB connection: " + err));
-console.log("DB connected succesfully");
+connectDB();
 
-// Add this helper function for key generation
-function generateEncryptionKey() {
-  return CryptoJS.lib.WordArray.random(256/8).toString();
-}
+// Middleware
+app.use(cors());
+app.use(express.json());
 
 // Encryption and decryption functions
 const encryptMessage = (message, symmetricKey) => {
@@ -91,100 +77,117 @@ const decryptMessage = (encryptedMessage, symmetricKey) => {
   }
 };
 
+// Signup Route
 app.post("/signup", async (req, res) => {
-    console.log("Signup request received:", req.body);
-    try {
-        // Validate required fields
-        if (!req.body.email || !req.body.password || !req.body.name || !req.body.role) {
-            return res.status(400).send("Missing required fields: email, password, name, and role are required");
-        }
-
-        const existingUser = await User.findOne({ email: req.body.email });
-        if (existingUser) {
-            return res.status(400).json({ message: "Email address already in use." });
-        }
-
-        // Use a default value for saltRounds if environment variable isn't set
-        const saltRounds = process.env.saltRounds ? parseInt(process.env.saltRounds) : 10;
-        const hash = await bcrypt.hash(req.body.password.toString(), saltRounds);
-
-        const user = {
-            name: req.body.name,
-            email: req.body.email,
-            password: hash,
-            role: req.body.role, // 'student' or 'teacher'
-            courses: [], // Array to store enrolled/teaching courses
-            createdAt: new Date()
-        };
-
-        const newUser = await User.create(user);
-        
-        // Create JWT token
-        const token = jwt.sign(
-            { userId: newUser._id, role: newUser.role }, 
-            process.env.JWT_SECRET, 
-            { expiresIn: '24h' }
-        );
-
-        res.status(201).json({
-            message: "User created successfully",
-            token,
-            user: {
-                id: newUser._id,
-                name: newUser.name,
-                email: newUser.email,
-                role: newUser.role
-            }
-        });
-    } catch (err) {
-        console.error("Error:", err);
-        res.status(500).json({ message: "Internal Server Error" });
+  console.log("Signup request received:", req.body);
+  try {
+    // Validate required fields
+    if (!req.body.fullName || !req.body.email || !req.body.password || !req.body.role) {
+      return res.status(400).json({ 
+        message: "Missing required fields: fullName, email, password, and role are required" 
+      });
     }
-})
 
-.post("/signin", async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        
-        if (!email || !password) {
-            return res.status(400).json({ message: "Email and password are required" });
-        }
-
-        // Check if the user exists in the database
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(401).json({ message: "Invalid credentials" });
-        }
-
-        // Compare the provided password with the hashed password
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(401).json({ message: "Invalid credentials" });
-        }
-
-        // Create JWT token
-        const token = jwt.sign(
-            { userId: user._id, role: user.role }, 
-            process.env.JWT_SECRET, 
-            { expiresIn: '24h' }
-        );
-
-        res.status(200).json({
-            message: "Login successful",
-            token,
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role
-            }
-        });
-    } catch (err) {
-        console.error("Sign In Error:", err);
-        res.status(500).json({ message: "Internal Server Error" });
+    // Check if the email is already in use
+    const existingUser = await User.findOne({ email: req.body.email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email address already in use." });
     }
-})
-.get("/profile", verifyToken, async (req, res) => {
+
+    // Hash the password
+    const saltRounds = process.env.saltRounds ? parseInt(process.env.saltRounds) : 10;
+    const hash = await bcrypt.hash(req.body.password.toString(), saltRounds);
+
+    // Create the user object
+    const user = {
+      fullName: req.body.fullName,
+      email: req.body.email,
+      password: hash,
+      role: req.body.role,
+      specialization: req.body.role === 'teacher' ? req.body.specialization : undefined,
+      courses: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      isActive: true,
+    };
+
+    // Save the user to the database
+    const newUser = await User.create(user);
+
+    // Generate a JWT token
+    const token = jwt.sign(
+      { userId: newUser._id, role: newUser.role }, 
+      process.env.JWT_SECRET, 
+      { expiresIn: '24h' }
+    );
+
+    // Return the response
+    res.status(201).json({
+      message: "User created successfully",
+      token,
+      user: {
+        id: newUser._id,
+        fullName: newUser.fullName,
+        email: newUser.email,
+        role: newUser.role,
+        specialization: newUser.specialization,
+        createdAt: newUser.createdAt,
+        updatedAt: newUser.updatedAt,
+        isActive: newUser.isActive,
+      }
+    });
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).json({ message: "Internal Server Error", error: err.message });
+  }
+});
+
+// Signin Route
+app.post("/signin", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
+    }
+
+    // Check if the user exists in the database
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    // Compare the provided password with the hashed password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    // Create JWT token
+    const token = jwt.sign(
+      { userId: user._id, role: user.role }, 
+      process.env.JWT_SECRET, 
+      { expiresIn: '24h' }
+    );
+
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+  } catch (err) {
+    console.error("Sign In Error:", err);
+    res.status(500).json({ message: "Internal Server Error", error: err.message });
+  }
+});
+
+// Profile Route
+app.get("/profile", verifyToken, async (req, res) => {
   if (req.user) {
     try {
       // Validate if the _id is a valid ObjectId
@@ -202,9 +205,10 @@ app.post("/signup", async (req, res) => {
   } else {
     return res.status(401).send("Unauthorized");
   }
-})
+});
 
-.get(`/posts`, verifyToken, async (req, res) => {
+// Fetch Posts Route
+app.get("/posts", verifyToken, async (req, res) => {
   const room = "hall";
   const api_server = "https://api2.aleph.im";
   
@@ -231,9 +235,10 @@ app.post("/signup", async (req, res) => {
     console.error("Error fetching posts:", err.message);
     return res.status(500).json({ error: "Error fetching posts", details: err.message });
   }
-})
+});
 
-.get(`/posts/:name`, verifyToken, async (req, res) => {
+// Fetch Posts by Name Route
+app.get("/posts/:name", verifyToken, async (req, res) => {
   const room = req.params.name;
   console.log(room);
   const api_server = "https://api2.aleph.im";
@@ -261,9 +266,10 @@ app.post("/signup", async (req, res) => {
     console.error("Error fetching posts:", err.message);
     return res.status(500).json({ error: "Error fetching posts", details: err.message });
   }
-})
+});
 
-.post("/message", verifyToken, async (req, res) => {
+// Message Route
+app.post("/message", verifyToken, async (req, res) => {
   if(req.user){
     try {
       const Auth_user = await User.findById(req.user.userId);
@@ -291,17 +297,6 @@ app.post("/signup", async (req, res) => {
         messageToStore = req.body.content.body;
       }
 
-      // Store the decrypted message
-      // const chat = await aleph.posts.submit(account.address, 'chat', { 
-      //   body: messageToStore,
-      //   isEncrypted: false
-      // }, {
-      //   ref: 'hall',
-      //   api_server: process.env.api_server,
-      //   account: account,
-      //   channel: "TEST"
-      // });
-
       res.status(200).json({
         status: "success",
         message: "Message stored successfully",
@@ -312,9 +307,10 @@ app.post("/signup", async (req, res) => {
       res.status(500).send("Error processing message");
     }
   }
-})
+});
 
-.post("/posts/:name", verifyToken, async (req, res) => {
+// Post Message Route
+app.post("/posts/:name", verifyToken, async (req, res) => {
   console.log("Request body: " + req.body.content.body);
   if(req.user){
       try {
@@ -357,8 +353,9 @@ app.post("/signup", async (req, res) => {
         res.status(500).send("Error sending message");
       }
   }
-})
+});
 
+// Verify Token Middleware
 async function verifyToken(req, res, next) {  
   // Extract the token from the 'Authorization' header
   const token = req.header('Authorization') && req.header('Authorization').split(' ')[1]; // Split by space, not '='  
@@ -374,4 +371,8 @@ async function verifyToken(req, res, next) {
   }
 }
 
-app.listen(3000, () => console.log("Server Started..."));
+// Start Server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
