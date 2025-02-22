@@ -3,7 +3,11 @@ import { useEffect } from 'react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import { FaRobot, FaChalkboardTeacher, FaAward, FaUsers, FaLaptopCode, FaBrain, FaGraduationCap, FaChartLine, FaGlobe, FaRocket, FaMedal, FaCertificate } from 'react-icons/fa'
+<<<<<<< HEAD
 import { useNavigate } from 'react-router-dom'
+=======
+import { Link } from 'react-router-dom'
+>>>>>>> 8a851b1e8eceb6d800833f62a99cf3d726dd6846
 
 function Home() {
   const navigate = useNavigate()
@@ -53,10 +57,60 @@ function Home() {
       variants={containerVariants}
       className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white"
     >
+      {/* Navbar */}
+      <nav className="fixed w-full z-50 bg-gray-900/80 backdrop-blur-sm border-b border-gray-800/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+                  EduSphere
+                </span>
+              </div>
+            </div>
+
+            {/* Navigation Links */}
+            <div className="hidden md:block">
+              <div className="ml-10 flex items-center space-x-8">
+                <a href="#features" className="text-gray-300 hover:text-white transition-colors">
+                  Features
+                </a>
+                <a href="#how-it-works" className="text-gray-300 hover:text-white transition-colors">
+                  How It Works
+                </a>
+                <a href="#testimonials" className="text-gray-300 hover:text-white transition-colors">
+                  Testimonials
+                </a>
+                <a href="#pricing" className="text-gray-300 hover:text-white transition-colors">
+                  Pricing
+                </a>
+              </div>
+            </div>
+
+            {/* Auth Buttons */}
+            <div className="flex items-center space-x-4">
+              <Link 
+                to="/login"
+                className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                Login
+              </Link>
+              <Link 
+                to="/signup"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                Sign Up
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+
       {/* Hero Section */}
       <motion.section 
         variants={itemVariants}
-        className="h-screen flex flex-col items-center justify-center text-center px-4 relative overflow-hidden"
+        className="h-screen flex flex-col items-center justify-center text-center px-4 relative overflow-hidden pt-16"
       >
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10"></div>
         <div data-aos="fade-up" data-aos-delay="200">
@@ -66,6 +120,7 @@ function Home() {
           <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mb-8">
             Revolutionizing Education Through Artificial Intelligence and Immersive Learning
           </p>
+<<<<<<< HEAD
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -74,6 +129,17 @@ function Home() {
           >
             Get Started
           </motion.button>
+=======
+          <Link to="/signup">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full text-lg font-semibold transition-all"
+            >
+              Get Started
+            </motion.button>
+          </Link>
+>>>>>>> 8a851b1e8eceb6d800833f62a99cf3d726dd6846
         </div>
       </motion.section>
 

@@ -1,13 +1,17 @@
+// Environment and warning handling
+require('dotenv').config();
 process.removeAllListeners('warning');
 process.on('warning', (warning) => {
-  if (warning.name === 'DeprecationWarning' && warning.message.includes('punycode')) {
-    return;
-  }
+  if (warning.name === 'DeprecationWarning' && warning.message.includes('punycode')) return;
   console.warn(warning.name, warning.message);
 });
 
-require('dotenv').config();
+// Import dependencies
 const express = require('express');
+<<<<<<< HEAD
+=======
+const mongoose = require('mongoose');
+>>>>>>> 8a851b1e8eceb6d800833f62a99cf3d726dd6846
 const cors = require('cors');
 const connectDB = require('../backend/config/db');
 const authRoutes = require('./routes/authRoutes');
@@ -17,6 +21,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const aleph = require('aleph-js');
 const CryptoJS = require('crypto-js');
+<<<<<<< HEAD
 
 const app = express();
 
@@ -29,54 +34,77 @@ app.use(express.json());
 
 // Encryption and decryption functions
 const encryptMessage = (message, symmetricKey) => {
-  try {
-    if (!message || !symmetricKey) {
-      console.error('Missing message or key for encryption');
-      return message;
-    }
+=======
+const NodeRSA = require('node-rsa');
 
-    // Use the symmetric key directly
-    const encrypted = CryptoJS.AES.encrypt(message, symmetricKey).toString();
-    return encrypted;
-  } catch (error) {
-    console.error('Encryption error:', error);
-    return message;
+// Initialize express
+const app = express();
+
+// Middleware configuration
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// MongoDB Connection with retry logic
+const connectDB = async (retries = 5) => {
+>>>>>>> 8a851b1e8eceb6d800833f62a99cf3d726dd6846
+  try {
+    await mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://dhrupesh:DK_dk@lab.pk1pccj.mongodb.net/labData", {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    });
+    console.log("✅ Database connected successfully");
+  } catch (err) {
+    console.error("❌ Database connection error:", err);
+    if (retries > 0) {
+      console.log(`Retrying connection... (${retries} attempts remaining)`);
+      setTimeout(() => connectDB(retries - 1), 5000);
+    }
   }
 };
 
-const decryptMessage = (encryptedMessage, symmetricKey) => {
+connectDB();
+
+app.use((err, req, res, next) => {
+  console.error('Error:', err.stack);
+  res.status(500).json({ 
+    message: 'Internal Server Error',
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
+});
+
+const generateEncryptionKey = () => CryptoJS.lib.WordArray.random(256/8).toString();
+
+const generateToken = (user) => {
+  return jwt.sign(
+    { userId: user._id, role: user.role }, 
+    process.env.JWT_SECRET, 
+    { expiresIn: '24h' }
+  );
+};
+
+// Authentication middleware
+const verifyToken = async (req, res, next) => {
   try {
-    if (!encryptedMessage || !symmetricKey) {
-      console.log('Missing data:', { encryptedMessage: !!encryptedMessage, key: !!symmetricKey });
-      return encryptedMessage;
-    }
-    
-    // Use the same key derivation as frontend
-    const key = CryptoJS.SHA256(symmetricKey).toString();
-    console.log('Decryption attempt with:', {
-      encryptedMessage: encryptedMessage,
-      derivedKey: key
-    });
+    const token = req.header('Authorization')?.split(' ')[1];
+    if (!token) return res.status(401).json({ message: "Access denied. No token provided." });
 
-    const bytes = CryptoJS.AES.decrypt(encryptedMessage, key);
-    const decryptedStr = bytes.toString(CryptoJS.enc.Utf8);
-    
-    console.log('Decryption result:', {
-      success: !!decryptedStr,
-      decryptedString: decryptedStr || 'Failed to decrypt'
-    });
-
-    if (decryptedStr && decryptedStr.length > 0) {
-      return decryptedStr;
-    }
-    
-    return encryptedMessage;
-  } catch (error) {
-    console.error('Decryption error:', error);
-    return encryptedMessage;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    res.status(401).json({ message: "Invalid token" });
   }
 };
 
+<<<<<<< HEAD
 // Signup Route
 app.post("/signup", async (req, res) => {
   console.log("Signup request received:", req.body);
@@ -220,12 +248,46 @@ app.get("/posts", verifyToken, async (req, res) => {
     return res.status(400).json({ error: "Invalid page or limit values" });
   }
 
+=======
+// Rate limiting
+const rateLimit = require('express-rate-limit');
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+app.use('/api/', limiter);
+
+// Routes
+app.post("/signup", async (req, res) => {
+>>>>>>> 8a851b1e8eceb6d800833f62a99cf3d726dd6846
   try {
-    // Fetch posts using Aleph API
-    const response = await aleph.posts.get_posts('chat', {
-      refs: [room], // Reference for room
-      api_server: "https://api2.aleph.im"
+    const { email, password, name, role } = req.body;
+
+    // Validate required fields
+    if (!email || !password || !name || !role) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    // Check existing user
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already registered" });
+    }
+
+    // Hash password
+    const saltRounds = parseInt(process.env.SALT_ROUNDS) || 10;
+    const hash = await bcrypt.hash(password.toString(), saltRounds);
+
+    // Create user
+    const newUser = await User.create({
+      name,
+      email,
+      password: hash,
+      role,
+      courses: [],
+      createdAt: new Date()
     });
+<<<<<<< HEAD
     if (response && response.posts) {
       return res.json(response.posts); // Return only the posts
     } else {
@@ -246,28 +308,29 @@ app.get("/posts/:name", verifyToken, async (req, res) => {
   // Ensure valid integers for page and limit
   const page = parseInt(req.query.page, 10) || 1;
   const limit = parseInt(req.query.limit, 10) || 20;
+=======
 
-  if (page < 1 || limit < 1) {
-    return res.status(400).json({ error: "Invalid page or limit values" });
-  }
+    // Generate token
+    const token = generateToken(newUser);
+>>>>>>> 8a851b1e8eceb6d800833f62a99cf3d726dd6846
 
-  try {
-    // Fetch posts using Aleph API
-    const response = await aleph.posts.get_posts('chat', {
-      refs: [room], // Reference for room
-      api_server: "https://api2.aleph.im"
+    res.status(201).json({
+      message: "User created successfully",
+      token,
+      user: {
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role
+      }
     });
-    if (response && response.posts) {
-      return res.json(response.posts); // Return only the posts
-    } else {
-      return res.status(404).json({ error: "No posts found" });
-    }
   } catch (err) {
-    console.error("Error fetching posts:", err.message);
-    return res.status(500).json({ error: "Error fetching posts", details: err.message });
+    console.error("Signup Error:", err);
+    res.status(500).json({ message: "Error creating user" });
   }
 });
 
+<<<<<<< HEAD
 // Message Route
 app.post("/message", verifyToken, async (req, res) => {
   if(req.user){
@@ -360,19 +423,67 @@ async function verifyToken(req, res, next) {
   // Extract the token from the 'Authorization' header
   const token = req.header('Authorization') && req.header('Authorization').split(' ')[1]; // Split by space, not '='  
   if (!token) return res.status(401).send("Access denied");
+=======
+app.post("/signin", async (req, res) => {
+>>>>>>> 8a851b1e8eceb6d800833f62a99cf3d726dd6846
   try {
-    // Verify the token using JWT
-    const decodedPayload = jwt.verify(token, process.env.JWT_SECRET);
-    // Attach the user info to the request
-    req.user = decodedPayload; // Attach the full decoded payload, not just the _id
-    next(); // Proceed to the next middleware or route handler
-  } catch (err) {
-    return res.status(401).send("Invalid token");
-  }
-}
+    const { email, password } = req.body;
 
+<<<<<<< HEAD
 // Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+=======
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password required" });
+    }
+
+    // Find user
+    const user = await User.findOne({ email }).select('+password');
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    // Verify password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    // Generate token
+    const token = generateToken(user);
+
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+  } catch (err) {
+    console.error("Login Error:", err);
+    res.status(500).json({ message: "Error during login" });
+  }
+});
+
+// Protected routes
+app.use('/api', verifyToken);
+
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('Received SIGTERM. Performing graceful shutdown...');
+  mongoose.connection.close();
+  process.exit(0);
+>>>>>>> 8a851b1e8eceb6d800833f62a99cf3d726dd6846
 });

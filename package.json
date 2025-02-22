@@ -17,11 +17,14 @@
     "aleph-js": "^0.1.0",
     "aos": "^2.3.4",
     "axios": "^1.7.9",
+<<<<<<< HEAD
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "crypto-js": "^4.0.0",
     "dotenv": "^8.6.0",
     "express": "^4.21.2",
+=======
+>>>>>>> 8a851b1e8eceb6d800833f62a99cf3d726dd6846
     "framer-motion": "^12.4.7",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.10.1",
@@ -29,7 +32,8 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
-    "react-router-dom": "^7.2.0"
+    "react-router-dom": "^7.2.0",
+    "recharts": "^2.15.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",

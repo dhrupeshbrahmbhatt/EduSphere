@@ -1,174 +1,183 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FaUser, FaLock, FaEnvelope, FaGraduationCap, FaChalkboardTeacher } from 'react-icons/fa';
+import { useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { FaEnvelope, FaLock, FaUser, FaGoogle, FaGithub } from 'react-icons/fa';
 
-const Signup = () => {
-  const [role, setRole] = useState('student');
+function Signup() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    fullName: '',
+    name: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    specialization: '' // For teachers only
+    confirmPassword: ''
   });
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    
-    try {
-      console.log('Signing up as:', role, formData);
-      // Add your registration logic here
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-    } catch (error) {
-      console.error('Signup error:', error);
-    } finally {
-      setIsLoading(false);
-    }
+    console.log('Signup attempt:', formData);
+    navigate('/dashboard');
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex bg-gradient-to-b from-gray-900 to-black">
-      <div className="flex-1 px-16 py-8 flex flex-col justify-center relative overflow-hidden">
+    <div className="min-h-screen bg-black flex">
+      {/* Left Content Section */}
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-gray-900 to-black items-center justify-center p-12">
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10"></div>
-        <div className="relative">
-          <h1 className="text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
-            Join Our AI-Powered Learning Platform
-          </h1>
-          <p className="text-xl text-gray-400 leading-relaxed">
-            Experience the future of education with personalized AI mentoring and interactive learning experiences. Choose your role and begin your journey today.
-          </p>
+        <div className="relative z-10 max-w-xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <h1 className="text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+              Join EduSphere Today
+            </h1>
+            <p className="text-gray-300 text-xl mb-8">
+              Unlock your potential with AI-powered learning. Join our global community of successful learners.
+            </p>
+            <div className="grid grid-cols-2 gap-6 mb-8">
+              {[
+                { stat: "500+", label: "AI-Powered Courses" },
+                { stat: "98%", label: "Completion Rate" },
+                { stat: "45+", label: "Industry Partners" },
+                { stat: "4.9/5", label: "Student Rating" }
+              ].map((item, index) => (
+                <div key={index} className="bg-gray-800/50 rounded-lg p-4 backdrop-blur-sm">
+                  <h3 className="text-2xl font-bold text-white">{item.stat}</h3>
+                  <p className="text-gray-400">{item.label}</p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
         </div>
       </div>
-      
-      <div className="flex-1 flex items-center justify-center p-8">
-        <div className="w-full max-w-md p-8 bg-gray-800/50 backdrop-blur-sm rounded-2xl">
-          <h2 className="text-3xl font-semibold text-center mb-8 text-white">Create Account</h2>
 
-          {/* Role Toggle */}
-          <div className="flex justify-center mb-8">
-            <div className="bg-gray-900/50 p-2 rounded-xl flex gap-2">
-              <button
-                onClick={() => setRole('student')}
-                className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all duration-300 ${
-                  role === 'student'
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
-                    : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                <FaGraduationCap className="text-xl" />
-                Student
-              </button>
-              <button
-                onClick={() => setRole('teacher')}
-                className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all duration-300 ${
-                  role === 'teacher'
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
-                    : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                <FaChalkboardTeacher className="text-xl" />
-                Teacher
-              </button>
+      {/* Right Signup Section */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-black">
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="max-w-md w-full"
+        >
+          <Link to="/" className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600 block text-center mb-8">
+            EduSphere
+          </Link>
+
+          <h2 className="text-3xl font-bold text-white mb-2 text-center">Create your account</h2>
+          <p className="text-gray-500 text-center mb-8">Start your learning journey today</p>
+
+          {/* Social Signup Buttons */}
+          <div className="space-y-4 mb-8">
+            <button className="w-full bg-white text-black rounded-full py-3 font-semibold flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors">
+              <FaGoogle className="text-xl" />
+              Sign up with Google
+            </button>
+            <button className="w-full bg-[#24292F] text-white rounded-full py-3 font-semibold flex items-center justify-center gap-3 hover:bg-gray-800 transition-colors">
+              <FaGithub className="text-xl" />
+              Sign up with GitHub
+            </button>
+          </div>
+
+          <div className="relative my-8">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-800"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-4 bg-black text-gray-500">or continue with</span>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="flex items-center text-sm font-medium text-gray-300 mb-2">
-                <FaUser className="mr-2" />
-                Full Name
-              </label>
-              <input
-                type="text"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 rounded-lg bg-gray-900/50 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition duration-200"
-                placeholder="Enter your full name"
-              />
-            </div>
-
-            <div>
-              <label className="flex items-center text-sm font-medium text-gray-300 mb-2">
-                <FaEnvelope className="mr-2" />
-                Email
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 rounded-lg bg-gray-900/50 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition duration-200"
-                placeholder="Enter your email"
-              />
-            </div>
-            
-            <div>
-              <label className="flex items-center text-sm font-medium text-gray-300 mb-2">
-                <FaLock className="mr-2" />
-                Password
-              </label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 rounded-lg bg-gray-900/50 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition duration-200"
-                placeholder="Create a password"
-              />
-            </div>
-
-            {role === 'teacher' && (
-              <div>
-                <label className="flex items-center text-sm font-medium text-gray-300 mb-2">
-                  <FaGraduationCap className="mr-2" />
-                  Specialization
-                </label>
+              <label className="block text-gray-300 mb-2">Full Name</label>
+              <div className="relative">
+                <FaUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
                   type="text"
-                  name="specialization"
-                  value={formData.specialization}
-                  onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg bg-gray-900/50 border border-gray-700 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition duration-200"
-                  placeholder="Your field of expertise"
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  className="w-full bg-black border border-gray-800 rounded-lg px-10 py-3 focus:outline-none focus:border-blue-500 text-white"
+                  placeholder="Enter your name"
                 />
               </div>
-            )}
+            </div>
+
+            <div>
+              <label className="block text-gray-300 mb-2">Email Address</label>
+              <div className="relative">
+                <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  className="w-full bg-black border border-gray-800 rounded-lg px-10 py-3 focus:outline-none focus:border-blue-500 text-white"
+                  placeholder="Enter your email"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-gray-300 mb-2">Password</label>
+              <div className="relative">
+                <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="password"
+                  required
+                  value={formData.password}
+                  onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  className="w-full bg-black border border-gray-800 rounded-lg px-10 py-3 focus:outline-none focus:border-blue-500 text-white"
+                  placeholder="Create a password"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-gray-300 mb-2">Confirm Password</label>
+              <div className="relative">
+                <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="password"
+                  required
+                  value={formData.confirmPassword}
+                  onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+                  className="w-full bg-black border border-gray-800 rounded-lg px-10 py-3 focus:outline-none focus:border-blue-500 text-white"
+                  placeholder="Confirm your password"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="terms"
+                className="h-4 w-4 rounded border-gray-800 bg-black text-blue-600 focus:ring-blue-500"
+              />
+              <label htmlFor="terms" className="ml-2 text-sm text-gray-400">
+                I agree to the <a href="#" className="text-blue-500 hover:text-blue-400">Terms of Service</a> and{' '}
+                <a href="#" className="text-blue-500 hover:text-blue-400">Privacy Policy</a>
+              </label>
+            </div>
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg hover:opacity-90 transition duration-200 font-medium transform hover:scale-[1.02]"
+              className="w-full bg-white text-black rounded-full py-3 font-semibold hover:bg-gray-100 transition-all"
             >
               Create Account
             </button>
           </form>
-          
-          <p className="text-center mt-6 text-gray-400">
+
+          <p className="text-gray-500 text-center mt-6">
             Already have an account?{' '}
-            <Link to="/login" className="text-blue-400 hover:text-blue-300">
-              Login
+            <Link to="/login" className="text-blue-500 hover:text-blue-400">
+              Sign in
             </Link>
           </p>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
-};
+}
 
 export default Signup; 
