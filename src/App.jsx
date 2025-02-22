@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
-// import Home from './pages/Home'
+import Home from './pages/Home'
 import AIMentor from './pages/AIMentor'
 // import Attendance from './pages/Attendance'
 // import Resources from './pages/Resources'
@@ -15,7 +15,7 @@ function App() {
         <Navbar />
         <main className="main-content">
           <Routes>
-            {/* <Route path="/" element={<Home />} /> */}
+            <Route path="/" element={<Home />} />
             <Route path="/ai-mentor" element={<AIMentor />} />
             {/* <Route path="/attendance" element={<Attendance />} /> */}
             {/* <Route path="/resources" element={<Resources />} />
