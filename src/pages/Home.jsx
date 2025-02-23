@@ -3,9 +3,11 @@ import { useEffect } from 'react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import { FaRobot, FaChalkboardTeacher, FaAward, FaUsers, FaLaptopCode, FaBrain, FaGraduationCap, FaChartLine, FaGlobe, FaRocket, FaMedal, FaCertificate } from 'react-icons/fa'
-import { Link } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 function Home() {
+  const navigate = useNavigate()
+
   useEffect(() => {
     AOS.init({
       duration: 1000,
@@ -38,6 +40,10 @@ function Home() {
         ease: "easeOut"
       }
     }
+  }
+
+  const handleGetStartedClick = () => {
+    navigate('/login')
   }
 
   return (
@@ -110,15 +116,14 @@ function Home() {
           <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mb-8">
             Revolutionizing Education Through Artificial Intelligence and Immersive Learning
           </p>
-          <Link to="/signup">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full text-lg font-semibold transition-all"
-            >
-              Get Started
-            </motion.button>
-          </Link>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full text-lg font-semibold transition-all"
+            onClick={handleGetStartedClick}
+          >
+            Get Started
+          </motion.button>
         </div>
       </motion.section>
 
