@@ -279,53 +279,18 @@ function Home() {
         </motion.div>
       </motion.section>
 
-      {/* Features Section with new design and animations */}
+      {/* Features Section - Removed AOS */}
       <motion.section 
-        className="py-20 px-4 relative overflow-hidden"
+        variants={containerVariants}
+        className="py-20 px-4"
       >
-        {/* Animated background elements */}
-        <motion.div 
-          className="absolute inset-0 opacity-10"
-          animate={{
-            background: [
-              "radial-gradient(circle at 0% 0%, #4F46E5 0%, transparent 50%)",
-              "radial-gradient(circle at 100% 100%, #4F46E5 0%, transparent 50%)",
-              "radial-gradient(circle at 0% 100%, #4F46E5 0%, transparent 50%)",
-              "radial-gradient(circle at 100% 0%, #4F46E5 0%, transparent 50%)",
-            ]
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            repeatType: "reverse"
-          }}
-        />
-
-        <div className="max-w-7xl mx-auto relative">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-            className="text-center mb-16"
+        <div className="max-w-7xl mx-auto">
+          <motion.h2 
+            variants={itemVariants}
+            className="text-4xl font-bold text-center mb-16"
           >
-            <motion.div
-              initial={{ scale: 0.5, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              className="inline-block"
-            >
-              <span className="px-4 py-1 bg-blue-500/10 text-blue-400 rounded-full text-sm font-medium mb-4 block">
-                Why Choose Us
-              </span>
-            </motion.div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">
-              Transform Your Learning Journey
-            </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">
-              Experience education reimagined through cutting-edge AI technology and personalized learning paths
-            </p>
-          </motion.div>
+            Features that Set Us Apart
+          </motion.h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
@@ -368,59 +333,32 @@ function Home() {
             ].map((feature, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ 
-                  scale: 1.02,
-                  transition: { duration: 0.2 }
-                }}
-                className={`feature-card relative group rounded-2xl p-6 bg-gradient-to-br ${feature.color} 
-                  backdrop-blur-xl border border-gray-800 hover:border-gray-700 
-                  transition-all duration-300`}
+                variants={itemVariants}
+                whileHover={{ scale: 1.05 }}
+                className={`bg-gradient-to-br ${feature.color} backdrop-blur-sm rounded-2xl p-8 
+                  border border-gray-700/30 hover:border-gray-600/30 transition-all duration-300
+                  group cursor-pointer relative overflow-hidden`}
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                
-                <motion.div
-                  initial={{ scale: 1 }}
-                  whileHover={{ scale: 1.1 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                  className="relative mb-4 inline-block"
-                >
-                  {feature.icon}
-                </motion.div>
-                
-                <h3 className="text-xl font-bold mb-2 relative">{feature.title}</h3>
-                <p className="text-gray-400 relative">{feature.description}</p>
-
-                <motion.div
-                  className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                  initial={{ scaleX: 0 }}
-                  whileHover={{ scaleX: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
+                <div className="relative z-10">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="p-3 rounded-xl bg-gray-900/50 group-hover:bg-gray-900/70 
+                      transition-colors duration-300">
+                      {feature.icon}
+                    </div>
+                    <h3 className="text-xl font-bold text-white group-hover:text-blue-400 
+                      transition-colors duration-300">
+                      {feature.title}
+                    </h3>
+                  </div>
+                  <p className="text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
+                    {feature.description}
+                  </p>
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent 
+                  opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"/>
               </motion.div>
             ))}
           </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.5 }}
-            className="text-center mt-16"
-          >
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-3 rounded-full 
-                font-semibold hover:from-blue-600 hover:to-purple-600 transition-all duration-300
-                shadow-lg hover:shadow-blue-500/25"
-            >
-              Explore All Features
-            </motion.button>
-          </motion.div>
         </div>
       </motion.section>
 
