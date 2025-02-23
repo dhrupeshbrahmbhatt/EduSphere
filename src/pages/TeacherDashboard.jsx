@@ -16,6 +16,7 @@ import {
   LineChart, Line, AreaChart, Area, BarChart, Bar, 
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer 
 } from 'recharts'
+import { useNavigate } from 'react-router-dom'
 
 function TeacherDashboard() {
   const [activeSection, setActiveSection] = useState('overview')
@@ -47,6 +48,8 @@ function TeacherDashboard() {
       { id: 2, text: "I'll look at it right away", sender: "me", time: "11:35 AM" },
     ],
   })
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     AOS.init({
@@ -221,7 +224,9 @@ function TeacherDashboard() {
             key={index}
             variants={itemVariants}
             className={`bg-gradient-to-br ${gradientColors[stat.color]} backdrop-blur-sm rounded-xl p-6 
-              hover:scale-105 transition-all duration-300 shadow-xl shadow-gray-900/20 border border-gray-700/30`}
+              hover:scale-105 transition-all duration-300 shadow-xl shadow-gray-900/20 border border-gray-700/30
+              ${stat.title === "Total Students" ? "cursor-pointer" : ""}`}
+            onClick={() => stat.title === "Total Students" && navigate('/total-students')}
           >
             <div className="flex items-center justify-between">
               <div>

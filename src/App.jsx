@@ -6,6 +6,7 @@ import TeacherDashboard from './pages/TeacherDashboard'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import StudentDashboard from './pages/StudentDashboard'
+import TotalStudents from './pages/TotalStudents'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/dashboard" element={<TeacherDashboard />} />
           <Route path="/student-dashboard" element={<StudentDashboard />} />
+          <Route path="/total-students" element={<TotalStudents />} />
         </Routes>
       </div>
     </Router>
