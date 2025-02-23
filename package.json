@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.22.0",
+    "@react-three/drei": "^10.0.0",
+    "@react-three/fiber": "^9.0.4",
     "@tailwindcss/vite": "^4.0.8",
     "aleph-js": "^0.1.0",
     "aos": "^2.3.4",
@@ -23,6 +25,7 @@
     "dotenv": "^8.6.0",
     "express": "^4.21.2",
     "framer-motion": "^12.4.7",
+    "gsap": "^3.12.7",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.10.1",
     "node-rsa": "^1.1.1",
@@ -30,7 +33,8 @@
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.2.0",
-    "recharts": "^2.15.1"
+    "recharts": "^2.15.1",
+    "three": "^0.173.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",

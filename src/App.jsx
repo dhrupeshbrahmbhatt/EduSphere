@@ -3,6 +3,7 @@ import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import AIMentor from './pages/AIMentor'
 import TeacherDashboard from './pages/TeacherDashboard'
+import StudentDashboard from './pages/StudentDashboard'
 
 import About from './pages/About'
 
@@ -13,18 +14,16 @@ import Signup from './pages/Signup'
 
 function App() {
   return (
-    <Router>
-      <div>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/ai-mentor" element={<AIMentor />} />
-          <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/dashboard" element={<TeacherDashboard />} />
-        </Routes>
-      </div>
-    </Router>
+    <div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/ai-mentor" element={<AIMentor />} />
+        <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/dashboard" element={<StudentDashboard />} />
+      </Routes>
+    </div>
   )
 }
 

@@ -6,6 +6,7 @@ process.on('warning', (warning) => {
 });
 
 // Import dependencies
+const config = require('./config');
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');

@@ -7,13 +7,14 @@ function Login() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    password: '',
+    role: 'student'
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Login attempt:', formData);
-    navigate('/dashboard');
+    navigate(formData.role === 'student' ? '/dashboard' : '/teacher-dashboard');
   };
 
   return (
@@ -63,6 +64,32 @@ function Login() {
 
           <h2 className="text-3xl font-bold text-white mb-2 text-center">Sign in to EduSphere</h2>
           <p className="text-gray-500 text-center mb-8">Enter your details below</p>
+
+          {/* Role Selection */}
+          <div className="flex gap-4 mb-8">
+            <button
+              type="button"
+              onClick={() => setFormData({ ...formData, role: 'student' })}
+              className={`flex-1 py-3 rounded-full font-semibold transition-all ${
+                formData.role === 'student'
+                  ? 'bg-white text-black'
+                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+              }`}
+            >
+              Student
+            </button>
+            <button
+              type="button"
+              onClick={() => setFormData({ ...formData, role: 'teacher' })}
+              className={`flex-1 py-3 rounded-full font-semibold transition-all ${
+                formData.role === 'teacher'
+                  ? 'bg-white text-black'
+                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+              }`}
+            >
+              Teacher
+            </button>
+          </div>
 
           {/* Social Login Buttons */}
           <div className="space-y-4 mb-8">
