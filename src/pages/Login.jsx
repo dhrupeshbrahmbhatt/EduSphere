@@ -1,25 +1,49 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FaEnvelope, FaLock, FaTwitter, FaGoogle, FaGithub } from 'react-icons/fa';
+import { FaEnvelope, FaLock, FaGoogle, FaGithub } from 'react-icons/fa';
 
 function Login() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    role: 'student'
+    role: 'student',
   });
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login attempt:', formData);
-    navigate(formData.role === 'student' ? '/dashboard' : '/teacher-dashboard');
+    setError('');
+
+    try {
+      const response = await fetch('http://localhost:5000/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      localStorage.setItem('token', data.token);
+      navigate(formData.role === 'student' ? '/dashboard' : '/teacher-dashboard');
+    } catch (err) {
+      setError(err.message);
+      console.error('Login error:', err);
+    }
   };
 
   return (
     <div className="min-h-screen bg-black flex">
-      {/* Left Content Section */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-gray-900 to-black items-center justify-center p-12">
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10"></div>
         <div className="relative z-10 max-w-xl">
@@ -36,10 +60,10 @@ function Login() {
             </p>
             <div className="grid grid-cols-2 gap-6 mb-8">
               {[
-                { stat: "1M+", label: "Active Students" },
-                { stat: "50+", label: "Countries" },
-                { stat: "95%", label: "Success Rate" },
-                { stat: "24/7", label: "AI Support" }
+                { stat: '1M+', label: 'Active Students' },
+                { stat: '50+', label: 'Countries' },
+                { stat: '95%', label: 'Success Rate' },
+                { stat: '24/7', label: 'AI Support' },
               ].map((item, index) => (
                 <div key={index} className="bg-gray-800/50 rounded-lg p-4 backdrop-blur-sm">
                   <h3 className="text-2xl font-bold text-white">{item.stat}</h3>
@@ -51,29 +75,26 @@ function Login() {
         </div>
       </div>
 
-      {/* Right Login Section */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-black">
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="max-w-md w-full"
-        >
-          <Link to="/" className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600 block text-center mb-8">
+        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="max-w-md w-full">
+          <Link
+            to="/"
+            className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600 block text-center mb-8"
+          >
             EduSphere
           </Link>
 
           <h2 className="text-3xl font-bold text-white mb-2 text-center">Sign in to EduSphere</h2>
           <p className="text-gray-500 text-center mb-8">Enter your details below</p>
 
-          {/* Role Selection */}
+          {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
           <div className="flex gap-4 mb-8">
             <button
               type="button"
               onClick={() => setFormData({ ...formData, role: 'student' })}
               className={`flex-1 py-3 rounded-full font-semibold transition-all ${
-                formData.role === 'student'
-                  ? 'bg-white text-black'
-                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                formData.role === 'student' ? 'bg-white text-black' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
               }`}
             >
               Student
@@ -82,16 +103,13 @@ function Login() {
               type="button"
               onClick={() => setFormData({ ...formData, role: 'teacher' })}
               className={`flex-1 py-3 rounded-full font-semibold transition-all ${
-                formData.role === 'teacher'
-                  ? 'bg-white text-black'
-                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                formData.role === 'teacher' ? 'bg-white text-black' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
               }`}
             >
               Teacher
             </button>
           </div>
 
-          {/* Social Login Buttons */}
           <div className="space-y-4 mb-8">
             <button className="w-full bg-white text-black rounded-full py-3 font-semibold flex items-center justify-center gap-3 hover:bg-gray-100 transition-colors">
               <FaGoogle className="text-xl" />
@@ -121,7 +139,7 @@ function Login() {
                   type="email"
                   required
                   value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="w-full bg-black border border-gray-800 rounded-lg px-10 py-3 focus:outline-none focus:border-blue-500 text-white"
                   placeholder="Enter your email"
                 />
@@ -136,7 +154,7 @@ function Login() {
                   type="password"
                   required
                   value={formData.password}
-                  onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   className="w-full bg-black border border-gray-800 rounded-lg px-10 py-3 focus:outline-none focus:border-blue-500 text-white"
                   placeholder="Enter your password"
                 />
@@ -150,9 +168,7 @@ function Login() {
                   id="remember"
                   className="h-4 w-4 rounded border-gray-800 bg-black text-blue-600 focus:ring-blue-500"
                 />
-                <label htmlFor="remember" className="ml-2 text-sm text-gray-400">
-                  Remember me
-                </label>
+                <label htmlFor="remember" className="ml-2 text-sm text-gray-400">Remember me</label>
               </div>
               <a href="#" className="text-sm text-blue-500 hover:text-blue-400">
                 Forgot password?
@@ -168,7 +184,7 @@ function Login() {
           </form>
 
           <p className="text-gray-500 text-center mt-6">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link to="/signup" className="text-blue-500 hover:text-blue-400">
               Sign up
             </Link>
@@ -179,4 +195,4 @@ function Login() {
   );
 }
 
-export default Login; 
+export default Login;

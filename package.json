@@ -18,7 +18,7 @@
     "@tailwindcss/vite": "^4.0.8",
     "aleph-js": "^0.1.0",
     "aos": "^2.3.4",
-    "axios": "^1.7.9",
+    "axios": "^1.8.1",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "crypto-js": "^4.0.0",
